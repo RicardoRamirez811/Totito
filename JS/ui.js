@@ -24,6 +24,10 @@ const UI = {
 
   tablero: document.getElementById("tablero"),
 
+  // ✅ Overlay
+  overlaySerieFinalizada: document.getElementById("overlaySerieFinalizada"),
+  btnOverlayNuevaSerie: document.getElementById("btnOverlayNuevaSerie"),
+
   cajaConfirmacion: document.getElementById("cajaConfirmacion"),
   textoConfirmacion: document.getElementById("textoConfirmacion"),
   btnConfirmarSi: document.getElementById("btnConfirmarSi"),
@@ -82,7 +86,8 @@ function renderizarTablero() {
     const idx = Number(btn.dataset.indice);
     btn.textContent = Juego.tablero[idx] || "";
 
-    btn.disabled = !Juego.iniciado || Juego.bloqueado || Juego.tablero[idx] !== "";
+    // bloqueo normal + bloqueo por overlay (serie finalizada)
+    btn.disabled = !Juego.iniciado || Juego.bloqueado || Juego.serieFinalizada || Juego.tablero[idx] !== "";
 
     // reset estilo
     btn.classList.remove("btn-success", "btn-outline-dark");
@@ -96,10 +101,24 @@ function renderizarTablero() {
   });
 }
 
+function renderizarOverlaySerieFinalizada() {
+  if (!UI.overlaySerieFinalizada) return;
+
+  if (Juego.iniciado && Juego.serieFinalizada) {
+    UI.overlaySerieFinalizada.classList.remove("d-none");
+    UI.overlaySerieFinalizada.classList.add("d-flex");
+  } else {
+    UI.overlaySerieFinalizada.classList.add("d-none");
+    UI.overlaySerieFinalizada.classList.remove("d-flex");
+  }
+}
+
 function renderizarControles() {
   const activo = Juego.iniciado;
-  UI.btnReiniciarRonda.disabled = !activo;
-  UI.btnRendirse.disabled = !activo || (Juego.bloqueado && !Juego.iniciado);
+
+  // ✅ Si la serie terminó, solo dejamos "Nueva serie"
+  UI.btnReiniciarRonda.disabled = !activo || Juego.serieFinalizada;
+  UI.btnRendirse.disabled = !activo || Juego.serieFinalizada;
   UI.btnNuevaSerie.disabled = !activo;
 
   UI.selectDificultad.disabled = (UI.selectRival.value !== "cpu");
@@ -134,6 +153,7 @@ function renderizarTodo() {
   renderizarEncabezado();
   renderizarControles();
   renderizarHistorial();
+  renderizarOverlaySerieFinalizada(); // ✅ NUEVO
 }
 
 let accionPendiente = null;

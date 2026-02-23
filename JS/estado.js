@@ -21,6 +21,7 @@ const Juego = {
   // Serie
   ronda: 0,
   victorias: { X: 0, O: 0 },
+  serieFinalizada: false, // ✅ NUEVO
 
   // Resaltado
   lineaGanadora: null, // [a,b,c] o null

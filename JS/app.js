@@ -53,6 +53,13 @@ function enlazarEventos() {
     ocultarConfirmacion();
   });
 
+  UI.btnOverlayNuevaSerie.addEventListener("click", () => {
+  pedirConfirmacion("¿Iniciar una nueva serie? (Marcador e historial vuelven a 0)", () => {
+    ocultarConfirmacion();
+    nuevaSerie();
+  });
+});
+
   UI.tablero.addEventListener("click", (e) => {
     const btn = e.target.closest("button[data-indice]");
     if (!btn) return;
